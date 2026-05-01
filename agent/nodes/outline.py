@@ -9,7 +9,24 @@ from agent.state import GraphState
 
 
 def _parse_outline(text: str) -> list[dict[str, Any]]:
-    data = json.loads(text)
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        # Try stripping markdown if present
+        cleaned_text = text.strip()
+        if cleaned_text.startswith("```json"):
+            cleaned_text = cleaned_text[7:]
+        if cleaned_text.endswith("```"):
+            cleaned_text = cleaned_text[:-3]
+        data = json.loads(cleaned_text.strip())
+
+    if isinstance(data, dict):
+        # Sometimes models wrap the array in a dict like {"outline": [...]} or {"items": [...]}
+        for key, val in data.items():
+            if isinstance(val, list):
+                data = val
+                break
+
     if not isinstance(data, list):
         raise ValueError("Outline response must be a JSON list.")
     outline: list[dict[str, Any]] = []

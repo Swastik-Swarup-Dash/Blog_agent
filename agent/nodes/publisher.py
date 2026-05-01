@@ -25,9 +25,27 @@ def _generate_tags(title: str) -> list[str]:
         prompt,
         generation_config={"response_mime_type": "application/json"},
     )
-    parsed = json.loads(response.text or "[]")
+    
+    text = response.text or "[]"
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        cleaned_text = text.strip()
+        if cleaned_text.startswith("```json"):
+            cleaned_text = cleaned_text[7:]
+        if cleaned_text.endswith("```"):
+            cleaned_text = cleaned_text[:-3]
+        parsed = json.loads(cleaned_text.strip())
+
+    if isinstance(parsed, dict):
+        for key, val in parsed.items():
+            if isinstance(val, list):
+                parsed = val
+                break
+
     if not isinstance(parsed, list):
         raise ValueError("Tag generation did not return a JSON list.")
+        
     tags: list[str] = []
     for item in parsed:
         if not isinstance(item, str):

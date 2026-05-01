@@ -22,6 +22,11 @@ RESEARCH_SYSTEM_INSTRUCTION = (
 
 
 def _parse_json_list(text: str) -> list[dict[str, Any]]:
+    # Regex helps bypass conversational prefixes LLMs sometimes insert
+    import re
+    match = re.search(r'\[.*\]', text, re.DOTALL)
+    if match:
+        text = match.group(0)
     cleaned = text.strip()
     if cleaned.startswith("```"):
         cleaned = cleaned.strip("`")
