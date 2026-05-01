@@ -1,6 +1,8 @@
 # File: requirements.txt
 langgraph>=0.2
-google-generativeai>=0.8
+langgraph-checkpoint-sqlite>=2.0
+langgraph-checkpoint>=2.0
+google-genai>=1.0
 requests>=2.31
 rich>=13.0
 python-dotenv>=1.0

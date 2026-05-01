@@ -35,7 +35,7 @@ def outline_node(state: GraphState) -> dict[str, Any]:
         if human_notes
         else "No additional human notes."
     )
-        prompt = (
+    prompt = (
         "Create a 5-7 section outline for a 2000-word developer-focused Dev.to blog post.\n"
         "Mandatory sections:\n"
         "1) Introduction (hook + thesis)\n"

@@ -16,7 +16,7 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python scheduler.py
         env:
-          GOOGLE_API_KEY: "AIzaSyAwCdnTVl-bGOjLYTMjrEOOTPOax-KiLHE"
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}

@@ -6,10 +6,10 @@ from typing import Any
 from agent.gemini_client import get_model
 from agent.state import GraphState
 
-    system_prompt = (
-        "You are an expert tech blogger writing for Dev.to. Tone: clear, "
-        "authoritative, hands-on, and engaging. Include code blocks where appropriate."
-    )
+WRITER_SYSTEM_INSTRUCTION = (
+    "You are an expert tech blogger writing for Dev.to. Tone: clear, "
+    "authoritative, hands-on, and engaging. Include code blocks where appropriate."
+)
 
 
 def writer_node(state: GraphState) -> dict[str, Any]:

@@ -1,4 +1,4 @@
 # File: tools/__init__.py
-from .medium_api import MediumAPIError, MediumClient
+from .devto_api import DevToAPIError, DevToClient
 
-__all__ = ["MediumClient", "MediumAPIError"]
+__all__ = ["DevToAPIError", "DevToClient"]
