@@ -30,7 +30,7 @@ class DevToClient:
         if not (200 <= response.status_code < 300):
             try:
                 payload = response.json()
-                message = payload.get("error", response.text)
+                message = str(payload.get("error", response.text))
             except Exception:  # noqa: BLE001
                 message = response.text
             raise DevToAPIError(message=message, status_code=response.status_code)
@@ -60,7 +60,6 @@ class DevToClient:
         publish_status: str,
     ) -> dict[str, Any]:
         url = f"{self.BASE_URL}/articles"
-        # Dev.to takes max 4 tags
         payload = {
             "article": {
                 "title": title,

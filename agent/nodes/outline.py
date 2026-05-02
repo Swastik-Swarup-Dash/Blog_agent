@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 from agent.gemini_client import get_model
@@ -9,16 +10,22 @@ from agent.state import GraphState
 
 
 def _parse_outline(text: str) -> list[dict[str, Any]]:
+    cleaned_text = (text or "").strip()
+    if cleaned_text.startswith("```"):
+        cleaned_text = cleaned_text.strip("`")
+        if cleaned_text.startswith("json"):
+            cleaned_text = cleaned_text[4:].strip()
+
+    if not cleaned_text:
+        cleaned_text = "[]"
+
     try:
-        data = json.loads(text)
+        data = json.loads(cleaned_text)
     except json.JSONDecodeError:
-        # Try stripping markdown if present
-        cleaned_text = text.strip()
-        if cleaned_text.startswith("```json"):
-            cleaned_text = cleaned_text[7:]
-        if cleaned_text.endswith("```"):
-            cleaned_text = cleaned_text[:-3]
-        data = json.loads(cleaned_text.strip())
+        match = re.search(r"\[.*\]", cleaned_text, re.DOTALL)
+        if not match:
+            raise
+        data = json.loads(match.group(0))
 
     if isinstance(data, dict):
         # Sometimes models wrap the array in a dict like {"outline": [...]} or {"items": [...]}

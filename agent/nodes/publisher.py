@@ -26,37 +26,30 @@ def _generate_tags(title: str) -> list[str]:
         generation_config={"response_mime_type": "application/json"},
     )
     
-    text = response.text or "[]"
-    try:
-        parsed = json.loads(text)
-    except json.JSONDecodeError:
-        cleaned_text = text.strip()
-        if cleaned_text.startswith("```json"):
-            cleaned_text = cleaned_text[7:]
-        if cleaned_text.endswith("```"):
-            cleaned_text = cleaned_text[:-3]
-        parsed = json.loads(cleaned_text.strip())
-
-    if isinstance(parsed, dict):
-        for key, val in parsed.items():
-            if isinstance(val, list):
-                parsed = val
-                break
-
+    raw_text = (response.text or "").strip()
+    if raw_text.startswith("```"):
+        raw_text = raw_text.strip("`")
+        if raw_text.startswith("json"):
+            raw_text = raw_text[4:].strip()
+    if not raw_text:
+        raw_text = "[]"
+    parsed = json.loads(raw_text)
     if not isinstance(parsed, list):
         raise ValueError("Tag generation did not return a JSON list.")
-        
+
     tags: list[str] = []
     for item in parsed:
         if not isinstance(item, str):
             continue
-        tag = item.strip().lower().replace(" ", "-")
+        tag = item.strip().lower().replace(" ", "")
+        tag = "".join(ch for ch in tag if ch.isalnum())
         if tag and tag not in tags:
             tags.append(tag)
     if len(tags) < 4:
         fallback = [w.strip(".,!?").lower() for w in title.split() if len(w) > 2]
         for word in fallback:
-            normalized = word.replace(" ", "-")
+            normalized = word.replace(" ", "")
+            normalized = "".join(ch for ch in normalized if ch.isalnum())
             if normalized and normalized not in tags:
                 tags.append(normalized)
             if len(tags) >= 4:

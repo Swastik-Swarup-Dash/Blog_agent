@@ -49,7 +49,7 @@ class GroqModelWrapper:
 
 
 def get_model(use_search: bool = False, system_instruction: str | None = None) -> GroqModelWrapper:
-    model_name = os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile")
+    model_name = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
     if use_search:
         search_notice = "Do not claim to have performed live web searches. Use general knowledge only."
         if system_instruction:
